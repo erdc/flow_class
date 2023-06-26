@@ -1,0 +1,7 @@
+flow_class.egg-info/
+flow_class/__pycache__/
+*/.coverage
+*/__pycache__/
+tests/output/*
+output/
+river_venv/
