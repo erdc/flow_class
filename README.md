@@ -40,9 +40,9 @@ The following packages are required for use:
 * pandas (for testing)
 * unittest (for testing)
 
-## Flow Classification Method
+## Flow_Classification Method
 
-The flow classification has many inputs, but only four are required. All inputs must be labelled in the call.
+The flow_classification has many inputs, but only four are required. All inputs must be labelled in the call.
 
 Required:
 * **GDB_Path**: (String) The path to the .gdb file with the layers for the observation and WBID values paired with the shape data
