@@ -5,7 +5,7 @@ import unittest
 import geopandas as gpd
 import pandas as pd
 
-class TestFlowClassifcation(unittest.TestCase):
+class test_flowclass(unittest.TestCase):
 
     def test_flowclass(self):
         print("Started tests")
