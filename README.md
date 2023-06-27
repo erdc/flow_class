@@ -28,7 +28,7 @@ To test the function, from the 'flow_class' file folder, run
 ``` $ py tests\test_flowclass.py ```
 
 ## Install for General Use
-To install the function for general use, run pip install 
+To install the package for general use, run pip install 
 
 ```$ git+https://github.com/meg8mhs2/flow_class.git ```
 
