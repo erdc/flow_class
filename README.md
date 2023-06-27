@@ -98,7 +98,7 @@ Optional:
 from flow_class import flow_classification
 
 def main()
-    flow_classification.flow_classification(GDB="Flow Regime CLassifications\Flow_Regimes.gdb", Obs_Layer="FlowRegime_Observations", SHP_Layer="WBID_FlwRgme_Designations", Override_Flag=True)
+    flow_classification.flow_classification(GDB_Path="Flow Regime CLassifications\Flow_Regimes.gdb", Obs_Layer="FlowRegime_Observations", SHP_Layer="WBID_FlwRgme_Designations", Override_Flag=True)
 
 if __name__ =="__main__":
     main()
