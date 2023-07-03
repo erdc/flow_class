@@ -13,23 +13,29 @@ The Override Approach assigns the classification as the highest flow regime obse
 
 An 'At Least Intermittent' observation type is also supported. The user has two choices of how to handle these. First, the user can decide if they want to include these observations as Intermittent observations (At_Least_Intermittent_Include). The system defaults to including these. In addition to this choice, the user can also decide if these observations should immediately override an ephemeral observation (At_Least_Intermittent_Flag). The will default to not immediately overriding. If the run is set to the Override Approach and the At_Least_Intermittent_Include is set to true, this choice will automatically be True, even if manually set to False. If both choices are set to false, 'At Least Intermittent' observations are ignored. This is not suggested. 
 
-## Download, Install, and Tests for Editting
+## Download, Install, Test, and Run
 ### Download:
 HTTPS: ``` $ git clone https://github.com/meg8mhs2/flow_class.git ```
 
 SSH: ``` $ git clone git@github.com:meg8mhs2/flow_class.git ```
 
 ### Install:
-When the working directory is set to the clone of the package from above, the following command can be used to save the code as a package and run it. This also allows for the tests to be run.
+When the working directory is set to the clone of the package from above, the following commands can be used to save the code as a package.
 
-``` $ pip install -e . ```
+* For General Use: ``` $ pip install . ```
+* For Editting: ``` $ pip install -e . ```
 
 ### Test:
 To test the function, from the 'flow_class' file folder, run 
 
 ``` $ py tests\test_flowclass.py ```
 
-## Install for General Use
+### Run:
+To use the function, edit the document 'flow_class_workflow.py' on the top lines which are commented '#EDIT REQUIRED' and run it:
+
+``` $ py flow_class_workflow.py ```
+
+## Install as a Package
 To install the package for general use, run pip install 
 
 ```$ git+https://github.com/meg8mhs2/flow_class.git ```
@@ -44,7 +50,7 @@ The following packages are required for use:
 
 ## Flow_Classification Method
 
-The flow_classification has many inputs, but only four are required. All inputs must be labelled in the call.
+The flow_classification has many inputs, but only eight are required. All inputs must be labelled in the call.
 
 Required:
 * **GDB_Path**: (String) The path to the .gdb file with the layers for the observation and WBID values paired with the shape data. Note that an r must be placed in front of the String path if using a Windows

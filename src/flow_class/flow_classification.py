@@ -233,7 +233,7 @@ def flow_classification(*, GDB_Path,
                 FlowDesg_values.loc[i,'Class_OR']='U'
 
     path = "Output"
-    print(os.getcwd())
+    #print(os.getcwd())
 
     if(Output_Columns_Weighted==False):
         listofcolumns=["P","I","E","Unknown","ALI"]
