@@ -51,10 +51,24 @@ Required:
 
 * **SHP_Layer**: (String) The layer with the WBID and shape data in the .gdb file
 
-Optional:
-* **SHP_Fields**: (array of Strings) The list of the fields from the shape file which should be included in the output. At minimum, the default fields are required.
+* **Unique_ID_Shp**: (String) The name of the column SHP_Layer which contains the unique identifer. Note: These values must match the unique identifiers in the Unique_ID_Obs column
 
-    Default: ["WBID", "geometry"]
+* **Geometry_Column**: (String) The name of the column which holds the geometry data in the SHP_Layer
+
+* **Unique_ID_Obs**: (String) The name of the column in the layer which contains the unique identifer. Note: These values must match the unique identifiers in the Unique_ID_Shp column
+
+* **Priority_Column**: (String) The name of the column which holds the priority values data in the Obs_Layer
+
+* **Flow_Regime_Column**: (String) The name of the column which holds the flow regime (P, I, E, etc) values data in the Obs_Layer
+
+* **SHP_Fields**: (String Array) The list of the fields from the SHP_Layer which should be included in the output (geometry and unique_ID is already included and does not need to be listed again)
+
+    Default: []
+
+Optional:
+* **SHP_Fields**: (String Array) The list of the fields from the SHP_Layer which should be included in the output (geometry and unique_ID is already included and does not need to be listed again)
+
+    Default: []
 
 * **Case**: (boolean) Whether the flow_regime matches should be case-sensitive (True) or not (False)
     
@@ -92,13 +106,17 @@ Optional:
 
     Default: None (if specified to None, the output will be a .shp file labelled Flow_Classification_Output_{Date}.shp)
 
+* **Output_Columns_Weighted**: (boolean) Whether the output file should have the columns with the sum of weights for each classification (P,I,E) (True) or not (False)
+
+    Deafult: True
+
 ## Flow Classification Example:
 
 ```
 from flow_class import flow_classification
 
 def main()
-    flow_classification.flow_classification(GDB_Path="Flow Regime CLassifications\Flow_Regimes.gdb", Obs_Layer="FlowRegime_Observations", SHP_Layer="WBID_FlwRgme_Designations", Override_Flag=True)
+    flow_classification.flow_classification(GDB_Path="Flow Regime CLassifications\Flow_Regimes.gdb", Obs_Layer="FlowRegime_Observations", SHP_Layer="WBID_FlwRgme_Designations",  Unique_ID_Shp="WBID", Geometry_Column='geometry', Unique_ID_Obs="WBID", Priority_Column="Priority", Flow_Regime_Column="Flow_Regime", SHP_Fields=[], Override_Flag=True)
 
 if __name__ =="__main__":
     main()

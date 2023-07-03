@@ -36,7 +36,7 @@ class test_flowclass(unittest.TestCase):
 
 
         
-        x2=flow_classification.flow_classification(GDB_Path= r"tests/ADEQ_FlowRegimes_Test\Flow_Regimes.gdb", Obs_Layer='FlowRegime_Observations', SHP_Layer='WBID_FlwRgme_Designations')
+        x2=flow_classification.flow_classification(GDB_Path= r"tests/ADEQ_FlowRegimes_Test\Flow_Regimes.gdb", Obs_Layer='FlowRegime_Observations', SHP_Layer='WBID_FlwRgme_Designations', Unique_ID_Shp='WBID', Geometry_Column='geometry', Unique_ID_Obs='WBID', Flow_Regime_Column='Flow_Regime', Priority_Column='Priority')
         for i in range(len(x2)):
             for j in range(len(x2['WBID'])):
                 self.assertEqual( x2.iloc[i][j], gdf.iloc[i][j])
@@ -68,7 +68,7 @@ class test_flowclass(unittest.TestCase):
         gdf2["Class_Wt"]= ["P","U","I","I"]
 
 
-        x3=flow_classification.flow_classification(GDB_Path= r"tests/ADEQ_FlowRegimes_Test2\Flow_Regimes.gdb", Obs_Layer='FlowRegime_Observations', SHP_Layer='WBID_FlwRgme_Designations',Case=False, At_Least_Intermittent_Input_List=['At Least Intermittent', 'ALI', 'At Least I'], At_Least_Intermittent_Include=False, At_Least_Intermittent_Override=True, Override_Flag=True)
+        x3=flow_classification.flow_classification(GDB_Path= r"tests/ADEQ_FlowRegimes_Test2\Flow_Regimes.gdb", Obs_Layer='FlowRegime_Observations', SHP_Layer='WBID_FlwRgme_Designations',Unique_ID_Shp='WBID', Geometry_Column='geometry', Unique_ID_Obs='WBID', Flow_Regime_Column='Flow_Regime', Priority_Column='Priority',Case=False, At_Least_Intermittent_Input_List=['At Least Intermittent', 'ALI', 'At Least I'], At_Least_Intermittent_Include=False, At_Least_Intermittent_Override=True, Override_Flag=True)
         for i in range(len(x3)):
             for j in range(len(x3['WBID'])):
                 self.assertEqual( x3.iloc[i][j], gdf2.iloc[i][j])
