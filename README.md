@@ -1,15 +1,17 @@
 # FlowClass: Flow Classification Code
 ## Description
-This code takes an input shape file which has associated 'WBID' values and an observation file which has 'WBID' values, a priority for each obersation, and a flow regime for each observation. The flow regime can have a variety of names, but will ultimately be divided into perennial, intermittent, or ephemeral. An 'at least intermittent' observation type is also supported, and the user has several options how to handle these observation types.
+This code takes an input shape file and an observation file which have unique identifiers which match in both files. Additionally, the shape file must have associated geometry. The observation file must include a priority for each observation and a flow regime for each observation. The flow regime can have a variety of names, but will ultimately be divided into perennial, intermittent, or ephemeral. An 'at least intermittent' observation type is also supported, and the user has several options how to handle these observation types. The code returns and saves a file which assigns a flow classification of perennial, intermittent, or ephemeral (or unknown) to each flow line based on the observations and their weights.
 
-## Background
+## Background and Use
 Flows are typically classified into ephemeral (flow only during preciptation events), intermittent (flow seasonally), and perennial (flow year-round). The code allows for two approaches to classifying streams- a Weighted Approach and an Override Approach.
 
-Each observation must have a 'WBID' value, a priority, and a flow regime. The priorities can be set based on the reliability and effectivenesses of the different observations and observation types. The flow regime can be set to different values (for example, 'perennial', 'possibly perennial', etc), however, these will ultimately need to be classified into one of three main classification- ephemeral, intermittent, perennial (E, I, or P). 
+Each observation must have a unique identifier, a priority, and a flow regime. The priorities can be set based on the reliability and effectivenesses of the different observations and observation types. The flow regime can be set to different values (for example, 'perennial', 'possibly perennial', etc), however, these will ultimately need to be classified into one of three main classification- ephemeral, intermittent, perennial (E, I, or P). 
 
-The weighted approach sums the priorities of each observation for a given WBID, then selects the classification based on the highest sum. For example, if a certain flow has three observations- a priority 9 labelled as perennial, a priority 7 labelled as intermittent, and a priority 5 labelled as intermittent, then the sum of intermittent priorities would be 13 and the sum of perennial priorities would be 9. Therefore, intermittent would be selected as this has the highest sum.
+The Weighted Approach sums the priorities of each observation for a given WBID, then selects the classification based on the highest sum. For example, if a certain flow has three observations- a priority 9 labelled as perennial, a priority 7 labelled as intermittent, and a priority 5 labelled as intermittent, then the sum of intermittent priorities would be 13 and the sum of perennial priorities would be 9. Therefore, intermittent would be selected as this has the highest sum.
 
-The override approach assigns the classification as the highest flow regime observation (where perennial>intermittent>ephemeral). For example, if a certain flow has three observations- a priority 9 labelled as perennial, a priority 7 labelled as intermittent, and a priority 5 labelled as intermittent, then the highest classification would be perennial. Therefore, perennial would be selected. This approach ignores priority and weights.
+The Override Approach assigns the classification as the highest flow regime observation (where perennial>intermittent>ephemeral). For example, if a certain flow has three observations- a priority 9 labelled as perennial, a priority 7 labelled as intermittent, and a priority 5 labelled as intermittent, then the highest classification would be perennial. Therefore, perennial would be selected. This approach ignores priority/weights.
+
+An 'At Least Intermittent' observation type is also supported. The user has two choices of how to handle these. First, the user can decide if they want to include these observations as Intermittent observations (At_Least_Intermittent_Include). The system defaults to including these. In addition to this choice, the user can also decide if these observations should immediately override an ephemeral observation (At_Least_Intermittent_Flag). The will default to not immediately overriding. If the run is set to the Override Approach and the At_Least_Intermittent_Include is set to true, this choice will automatically be True, even if manually set to False. If both choices are set to false, 'At Least Intermittent' observations are ignored. This is not suggested. 
 
 ## Download, Install, and Tests for Editting
 ### Download:
@@ -94,7 +96,11 @@ Optional:
 
     Default: False
 
-* **Override_Flag**: (boolean) Whether the weighted approach (False) or override approach (True) should be used
+* **Weighted_Flag**: (boolean) Whether the weighted approach should be used (True) or not (False). This will create a column labelled 'Class_Wt' in the output and can be used in collaboration with an Override Approach
+
+    Default: True
+
+* **Override_Flag**: (boolean) Whether the override approach should be used (True) or not (False). This will create a column labelled 'Class_OR' in the output and can be used in collaboration with an Weighted Approach
 
     Default: False
 
@@ -112,7 +118,7 @@ Optional:
 from flow_class import flow_classification
 
 def main()
-    flow_classification.flow_classification(GDB_Path=r"Flow Regime CLassifications\Flow_Regimes.gdb", Obs_Layer="FlowRegime_Observations", SHP_Layer="WBID_FlwRgme_Designations",  Unique_ID_Shp="WBID", Geometry_Column='geometry', Unique_ID_Obs="WBID", Priority_Column="Priority", Flow_Regime_Column="Flow_Regime", SHP_Fields=["Length_Mile"], Override_Flag=True)
+    flow_classification.flow_classification(GDB_Path=r"Flow Regime CLassifications\Flow_Regimes.gdb", Obs_Layer="FlowRegime_Observations", SHP_Layer="WBID_FlwRgme_Designations",  Unique_ID_Shp="WBID", Geometry_Column='geometry', Unique_ID_Obs="WBID", Priority_Column="Priority", Flow_Regime_Column="Flow_Regime", SHP_Fields=["Length_Mile"], Weighted_Flag=False, Override_Flag=True)
 
 if __name__ =="__main__":
     main()

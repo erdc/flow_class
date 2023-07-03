@@ -3,7 +3,7 @@ from datetime import datetime
 import os
 
 
-def flow_classification(*, GDB_Path, Obs_Layer, SHP_Layer, Unique_ID_Shp, Geometry_Column, Unique_ID_Obs, Priority_Column, Flow_Regime_Column, SHP_Fields=[], Case=True, Perennial_Input_List=['P', 'Perennial', 'Potentially Perennial'], Intermittent_Input_List=['I', 'Intermittent', 'Potentially Intermittent'], Ephemeral_Input_List=['E', 'Ephemeral', 'Potentially Ephemeral'], At_Least_Intermittent_Input_List=['At Least Intermittent'], At_Least_Intermittent_Include=True, At_Least_Intermittent_Override=True, Override_Flag=False, Output=None, Output_Columns_Weighted=True):
+def flow_classification(*, GDB_Path, Obs_Layer, SHP_Layer, Unique_ID_Shp, Geometry_Column, Unique_ID_Obs, Priority_Column, Flow_Regime_Column, SHP_Fields=[], Case=True, Perennial_Input_List=['P', 'Perennial', 'Potentially Perennial'], Intermittent_Input_List=['I', 'Intermittent', 'Potentially Intermittent'], Ephemeral_Input_List=['E', 'Ephemeral', 'Potentially Ephemeral'], At_Least_Intermittent_Input_List=['At Least Intermittent'], At_Least_Intermittent_Include=True, At_Least_Intermittent_Override=True, Weighted_Flag=True, Override_Flag=False, Output=None, Output_Columns_Weighted=True):
     """
     Determine the flow classification using a weighted approach or override approach, 
     given a shape file with WBIDs and a file with observations corresponding to the WBIDs with (at minimum) a priority and a flow regime classification
@@ -64,9 +64,13 @@ def flow_classification(*, GDB_Path, Obs_Layer, SHP_Layer, Unique_ID_Shp, Geomet
     :type At_Least_Intermittent_Flag: boolean
     :default At_Least_Intermittent_Flag: False
 
-    :param Override_Flag: Whether the weighted approach (False) or override approach (True) should be used
+    :param Weighted_Flag: Whether the Weighted Approach should be used (True) or not (False). This will create a column labelled 'Class_Wt' in the output and can be used in collaboration with an Override Approach
     :type Override_Flag: boolean
-    :default Override_Flag: False
+    :default Override_Flag: True
+
+    :param Override_Flag: Whether the Override Approach should be used (True) or not (False). This will create a column labelled 'Class_OR' in the output and can be used in collaboration with an Weighted Approach
+    :type Override_Flag: boolean
+    :default Override_Flag: True
 
     :param Output: The name/location of the output file.
     :type Output: String 
@@ -81,6 +85,9 @@ def flow_classification(*, GDB_Path, Obs_Layer, SHP_Layer, Unique_ID_Shp, Geomet
     "Class_OR" (if the override approach was used)
     """
     print("Started..")
+
+    if(Weighted_Flag==False and Override_Flag==False):
+        raise Exception("Weighted_Flag and Override_Flag connot both be set to False")
 
     # Read the observation file, Select the necessary fields, and Identify the WBID
     Obs_layer=[Unique_ID_Obs, Priority_Column, Flow_Regime_Column]
@@ -162,7 +169,7 @@ def flow_classification(*, GDB_Path, Obs_Layer, SHP_Layer, Unique_ID_Shp, Geomet
                 FlowDesg_values.loc[j,'Unknown']+= 1
 
     print("Begin Documenting Flow Regimes..")   
-    if(Override_Flag==False):
+    if(Weighted_Flag==True):
         # weighted approach- Determine the classification based on the max value
         # if equal values, default to higher classification (P>I>E)
         # if all are 0, return a U
@@ -187,7 +194,7 @@ def flow_classification(*, GDB_Path, Obs_Layer, SHP_Layer, Unique_ID_Shp, Geomet
             else:
                 FlowDesg_values.loc[i,'Class_Wt']='U'
     
-    else:
+    if(Override_Flag==True):
         # override approach- Determine the classification based on the 
         # highest classification which isn't 0 (P>I>E)
         # if all are 0, return a U
