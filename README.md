@@ -45,9 +45,9 @@ The following packages are required for use:
 The flow_classification has many inputs, but only four are required. All inputs must be labelled in the call.
 
 Required:
-* **GDB_Path**: (String) The path to the .gdb file with the layers for the observation and WBID values paired with the shape data
+* **GDB_Path**: (String) The path to the .gdb file with the layers for the observation and WBID values paired with the shape data. Note that an r must be placed in front of the String path if using a Windows
     
-* **Obs_Layer**: (String) The layer with the observations in the .gdb file. Observation file must include columns "WBID", "Priority", "Flow_Regime"
+* **Obs_Layer**: (String) The layer with the observations in the .gdb file. 
 
 * **SHP_Layer**: (String) The layer with the WBID and shape data in the .gdb file
 
@@ -60,10 +60,6 @@ Required:
 * **Priority_Column**: (String) The name of the column which holds the priority values data in the Obs_Layer
 
 * **Flow_Regime_Column**: (String) The name of the column which holds the flow regime (P, I, E, etc) values data in the Obs_Layer
-
-* **SHP_Fields**: (String Array) The list of the fields from the SHP_Layer which should be included in the output (geometry and unique_ID is already included and does not need to be listed again)
-
-    Default: []
 
 Optional:
 * **SHP_Fields**: (String Array) The list of the fields from the SHP_Layer which should be included in the output (geometry and unique_ID is already included and does not need to be listed again)
@@ -116,7 +112,7 @@ Optional:
 from flow_class import flow_classification
 
 def main()
-    flow_classification.flow_classification(GDB_Path="Flow Regime CLassifications\Flow_Regimes.gdb", Obs_Layer="FlowRegime_Observations", SHP_Layer="WBID_FlwRgme_Designations",  Unique_ID_Shp="WBID", Geometry_Column='geometry', Unique_ID_Obs="WBID", Priority_Column="Priority", Flow_Regime_Column="Flow_Regime", SHP_Fields=[], Override_Flag=True)
+    flow_classification.flow_classification(GDB_Path=r"Flow Regime CLassifications\Flow_Regimes.gdb", Obs_Layer="FlowRegime_Observations", SHP_Layer="WBID_FlwRgme_Designations",  Unique_ID_Shp="WBID", Geometry_Column='geometry', Unique_ID_Obs="WBID", Priority_Column="Priority", Flow_Regime_Column="Flow_Regime", SHP_Fields=["Length_Mile"], Override_Flag=True)
 
 if __name__ =="__main__":
     main()
