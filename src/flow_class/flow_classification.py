@@ -3,7 +3,26 @@ from datetime import datetime
 import os
 
 
-def flow_classification(*, GDB_Path, Obs_Layer, SHP_Layer, Unique_ID_Shp, Geometry_Column, Unique_ID_Obs, Priority_Column, Flow_Regime_Column, SHP_Fields=[], Case=True, Perennial_Input_List=['P', 'Perennial', 'Potentially Perennial'], Intermittent_Input_List=['I', 'Intermittent', 'Potentially Intermittent'], Ephemeral_Input_List=['E', 'Ephemeral', 'Potentially Ephemeral'], At_Least_Intermittent_Input_List=['At Least Intermittent'], At_Least_Intermittent_Include=True, At_Least_Intermittent_Override=True, Weighted_Flag=True, Override_Flag=False, Output=None, Output_Columns_Weighted=True):
+def flow_classification(*, GDB_Path, 
+                        Obs_Layer, 
+                        SHP_Layer, 
+                        Unique_ID_Shp, 
+                        Geometry_Column, 
+                        Unique_ID_Obs, 
+                        Priority_Column, 
+                        Flow_Regime_Column, 
+                        SHP_Fields=[], 
+                        Case=True, 
+                        Perennial_Input_List=['P', 'Perennial', 'Potentially Perennial'], 
+                        Intermittent_Input_List=['I', 'Intermittent', 'Potentially Intermittent'], 
+                        Ephemeral_Input_List=['E', 'Ephemeral', 'Potentially Ephemeral'], 
+                        At_Least_Intermittent_Input_List=['At Least Intermittent'], 
+                        At_Least_Intermittent_Include=True, 
+                        At_Least_Intermittent_Override=True, 
+                        Weighted_Flag=True, 
+                        Override_Flag=False, 
+                        Output=None, 
+                        Output_Columns_Weighted=True):
     """
     Determine the flow classification using a weighted approach or override approach, 
     given a shape file with WBIDs and a file with observations corresponding to the WBIDs with (at minimum) a priority and a flow regime classification

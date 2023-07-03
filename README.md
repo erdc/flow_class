@@ -118,7 +118,17 @@ Optional:
 from flow_class import flow_classification
 
 def main()
-    flow_classification.flow_classification(GDB_Path=r"Flow Regime CLassifications\Flow_Regimes.gdb", Obs_Layer="FlowRegime_Observations", SHP_Layer="WBID_FlwRgme_Designations",  Unique_ID_Shp="WBID", Geometry_Column='geometry', Unique_ID_Obs="WBID", Priority_Column="Priority", Flow_Regime_Column="Flow_Regime", SHP_Fields=["Length_Mile"], Weighted_Flag=False, Override_Flag=True)
+    flow_classification.flow_classification(GDB_Path=r"Flow Regime CLassifications\Flow_Regimes.gdb", 
+                                            Obs_Layer="FlowRegime_Observations", 
+                                            SHP_Layer="WBID_FlwRgme_Designations",  
+                                            Unique_ID_Shp="WBID", 
+                                            Geometry_Column='geometry', 
+                                            Unique_ID_Obs="WBID", 
+                                            Priority_Column="Priority", 
+                                            Flow_Regime_Column="Flow_Regime", 
+                                            SHP_Fields=["Length_Mile"], 
+                                            Weighted_Flag=False, 
+                                            Override_Flag=True)
 
 if __name__ =="__main__":
     main()
