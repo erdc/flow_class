@@ -1,6 +1,7 @@
 import geopandas as gpd
 from datetime import datetime
 import os
+import sys
 
 
 def flow_classification(*, GDB_Path, 
@@ -105,19 +106,32 @@ def flow_classification(*, GDB_Path,
     """
     print("Started..")
 
+    #Raise exception if both flags are set to false (this means that no flow classification will be returned)
     if(Weighted_Flag==False and Override_Flag==False):
-        raise Exception("Weighted_Flag and Override_Flag connot both be set to False")
+        raise Exception("Error 1.1: Weighted_Flag and Override_Flag connot both be set to False")
 
-    # Read the observation file, Select the necessary fields, and Identify the WBID
-    Obs_layer=[Unique_ID_Obs, Priority_Column, Flow_Regime_Column]
-    FlowObs_gdf = gpd.read_file(GDB_Path, layer=Obs_Layer)
-    FlowObs_gdf = FlowObs_gdf[Obs_layer]
+    # Read the observation file, Select the necessary fields, and Identify the Unique_ID
+    Obs_layer_IDS=[Unique_ID_Obs, Priority_Column, Flow_Regime_Column]
+    try:
+        FlowObs_gdf = gpd.read_file(GDB_Path, layer=Obs_Layer)
+    except: 
+        print("The observation layer was not found in the GDB document") 
+        sys.exit("Error 1.2: Correct observation layer or GBD path")
+    try:
+        FlowObs_gdf = FlowObs_gdf[Obs_layer_IDS]
+    except:
+        print("Unique_ID_Obs, Priority_Column and/or Flow_Regime_Column are not in observation layer") 
+        sys.exit("Error 1.3: Correct observation layer column names")
     FlowObs_WBID_list = FlowObs_gdf[Unique_ID_Obs].to_list()
 
     # Read the shape file
-    FlowDesg_gdf = gpd.read_file(GDB_Path, layer=SHP_Layer)
+    try:
+        FlowDesg_gdf = gpd.read_file(GDB_Path, layer=SHP_Layer)
+    except:
+        print("The shape layer was not found in the GDB document") 
+        sys.exit("Error 1.4: Correct shape layer")       
 
-    #Cleaning
+    #Cleaning- Remove any NA unique identifiers
     obs_none_count=FlowObs_gdf[Unique_ID_Obs].isna().sum() #determine how many missing WBID cells there are in observation file
     FlowObs_gdf = FlowObs_gdf.dropna(subset=[Unique_ID_Obs]) #remove rows with missing WBID
     FlowObs_gdf[Unique_ID_Obs] = [x.strip() for x in FlowObs_gdf[Unique_ID_Obs]] #remove spaces
@@ -128,16 +142,21 @@ def flow_classification(*, GDB_Path,
     FlowDesg_gdf[Unique_ID_Shp] = [x.strip() for x in FlowDesg_gdf[Unique_ID_Shp]] #remove spaces
     print("Removed", desg_none_count, "rows with missing Unique ID from the shape file.")
 
-    # remove fields in flowline gdf that have no observations
+    # remove fields in flowline gdf (shape layer) that have no observations in the observation file
     FlowDesg_filtered_gdf = FlowDesg_gdf[FlowDesg_gdf[Unique_ID_Shp].isin(FlowObs_WBID_list)]
+    if(FlowDesg_filtered_gdf.empty==True):
+        raise Exception("Error 1.5: There are no matches between the Unique ID for the Obs layer and the Unique ID for the shape layer")
 
-    # Create a new file which will document the output
+    # Create a new file (FlowDesg_value) which will document the output. Add the desired columns as specified in SHP_Fields
     All_SHP_Fields=[Unique_ID_Shp, Geometry_Column]
 
     for i in SHP_Fields:
         All_SHP_Fields.append(i)
-
-    FlowDesg_values=FlowDesg_filtered_gdf.loc[:,All_SHP_Fields]
+    try:
+        FlowDesg_values=FlowDesg_filtered_gdf.loc[:,All_SHP_Fields]
+    except:
+        print("Unique_ID_Shp, Geometry_Column and/or a column name in SHP_Fields are not in shape layer") 
+        sys.exit("Error 1.6: Correct observation layer column names")
     FlowDesg_values=FlowDesg_values.reset_index()
 
     #If Case=False, the list will not be case-sensitive
@@ -156,14 +175,14 @@ def flow_classification(*, GDB_Path,
     FlowDesg_values['ALI']=0 #Sum of priorities
 
     # 1- For each observation in the observation file, 
-    # 2- identify the index of the row in the values file which has the same WBID
+    # 2- identify the index of the row in the values file which has the same unique ID
     # 3- If there is a corresponding row, continue
-    # 4- Based on the 'Flow_Regime', which identifies the classification, add the priority value to the 
+    # 4- Based on the flow_regime (which identifies the classification) add the priority value to the 
     # 5- corresponding classification category in the values file
     # 6- If the 'At_Least_Intermittent_Include' variable is set to true, 
     # 7- add any 'At least intermittent' observations to the 'intermittent' category
     # 8- If the 'At_Least_Intermittent_Override' variable is set to true, 
-    # 9- set the 'ALIVal' to 1 when there are 'at least intermittent' observations
+    # 9- set the 'ALI' to 1 when there are 'at least intermittent' observations
     # 10- If the flow_regime is unknown, it will be included as a count rather than the sum of priorities
     print("Begin Assessing Flow Regimes..")
     for i in FlowObs_gdf.index: #1
@@ -203,7 +222,7 @@ def flow_classification(*, GDB_Path,
             if(Pval>=Ival and Pval >=Eval and Pval !=0): 
                 FlowDesg_values.loc[i,'Class_Wt']='P'
             #If I values are greater than E, set classification to I
-            #If ALIval is 1, then the Override option for the 'At Least Intermittent' is true and there was an override-set classification to I
+            #If ALIVal is 1, then the Override option for the 'At Least Intermittent' is true and there was an override-set classification to I
             elif(Ival>=Eval and Ival !=0 or ALIval==1):
                 FlowDesg_values.loc[i,'Class_Wt']='I'
             #If E vals are not 0, set classification to E
@@ -235,6 +254,7 @@ def flow_classification(*, GDB_Path,
     path = "Output"
     #print(os.getcwd())
 
+    #If Output_Columns_Weighted is false, then the output should not have individual summations
     if(Output_Columns_Weighted==False):
         listofcolumns=["P","I","E","Unknown","ALI"]
         FlowDesg_values= FlowDesg_values.drop(listofcolumns, axis=1)
@@ -244,14 +264,17 @@ def flow_classification(*, GDB_Path,
         os.makedirs(path)
 
     print("Finished. Saving output..")
-    #Return an Output Excel File with the date
+    #Return an Output Shape File with the date if output is not specified, return the output file if it is specified
     if(Output==None):
         current_date = datetime.now().strftime("%Y-%m-%d")
         #FlowDesg_values.to_excel(f'Flow_Classification_Output_{current_date}.xlsx', index=False)
         FlowDesg_values.to_csv(f'Output\Flow_Classification_Output_{current_date}.txt', index=False)
         FlowDesg_values.to_file(f'Output\Flow_Classification_Output__{current_date}.shp', index=False)
     else:
-        FlowDesg_values.to_file(Output, index=False)
+        try:
+            FlowDesg_values.to_file(Output, index=False)
+        except:
+            print("Output file designation is not acceptable. Output file must be a supported geopandas file")
         #FlowDesg_values.to_excel(Output, index=False)
     return FlowDesg_values
     
