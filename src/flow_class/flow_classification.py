@@ -4,7 +4,8 @@ import os
 import sys
 
 
-def flow_classification(*, GDB_Path, 
+def flow_classification(*, Obs_Path,
+                        Shp_Path, 
                         Obs_Layer, 
                         SHP_Layer, 
                         Unique_ID_Shp, 
@@ -28,8 +29,11 @@ def flow_classification(*, GDB_Path,
     Determine the flow classification using a weighted approach or override approach, 
     given a shape file with WBIDs and a file with observations corresponding to the WBIDs with (at minimum) a priority and a flow regime classification
     
-    :param GDB_Path: The path to the .gdb file with the layers for the observation and WBID values paired with the shape data
-    :type GDB_Path: String
+    :param Obs_Path: The path to the .gdb file with the layers for the observation data
+    :type Obs_Path: String
+
+    :param Shp_Path: The path to the .gdb file with the layers with the shape data
+    :type Shp_Path: String
     
     :param Obs_Layer: The layer with the observations in the .gdb file. Observation file must include columns "WBID", "Priority", "Flow_Regime"
     :type Obs_Layer: String
@@ -113,23 +117,23 @@ def flow_classification(*, GDB_Path,
     # Read the observation file, Select the necessary fields, and Identify the Unique_ID
     Obs_layer_IDS=[Unique_ID_Obs, Priority_Column, Flow_Regime_Column]
     try:
-        FlowObs_gdf = gpd.read_file(GDB_Path, layer=Obs_Layer)
+        FlowObs_gdf = gpd.read_file(Obs_Path, layer=Obs_Layer)
     except: 
         print("The observation layer was not found in the GDB document") 
-        sys.exit("Error 1.2: Correct observation layer or GBD path")
+        sys.exit("Error 1.2: Please correct observation layer or GBD path")
     try:
         FlowObs_gdf = FlowObs_gdf[Obs_layer_IDS]
     except:
         print("Unique_ID_Obs, Priority_Column and/or Flow_Regime_Column are not in observation layer") 
-        sys.exit("Error 1.3: Correct observation layer column names")
+        sys.exit("Error 1.3: Please correct observation layer column names")
     FlowObs_WBID_list = FlowObs_gdf[Unique_ID_Obs].to_list()
 
     # Read the shape file
     try:
-        FlowDesg_gdf = gpd.read_file(GDB_Path, layer=SHP_Layer)
+        FlowDesg_gdf = gpd.read_file(Shp_Path, layer=SHP_Layer)
     except:
         print("The shape layer was not found in the GDB document") 
-        sys.exit("Error 1.4: Correct shape layer")       
+        sys.exit("Error 1.4: Please correct shape layer")       
 
     #Cleaning- Remove any NA unique identifiers
     obs_none_count=FlowObs_gdf[Unique_ID_Obs].isna().sum() #determine how many missing WBID cells there are in observation file
@@ -156,7 +160,7 @@ def flow_classification(*, GDB_Path,
         FlowDesg_values=FlowDesg_filtered_gdf.loc[:,All_SHP_Fields]
     except:
         print("Unique_ID_Shp, Geometry_Column and/or a column name in SHP_Fields are not in shape layer") 
-        sys.exit("Error 1.6: Correct observation layer column names")
+        sys.exit("Error 1.6: Please correct observation layer column names")
     FlowDesg_values=FlowDesg_values.reset_index()
 
     #If Case=False, the list will not be case-sensitive

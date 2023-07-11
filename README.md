@@ -53,7 +53,9 @@ The following packages are required for use:
 The flow_classification has many inputs, but only eight are required. All inputs must be labelled in the call.
 
 Required:
-* **GDB_Path**: (String) The path to the .gdb file with the layers for the observation and WBID values paired with the shape data. Note that an r must be placed in front of the String path if using a Windows
+* **Obs_Path**: (String) The path to the .gdb file with the layer for the observation data. Note that an r must be placed in front of the String path if using a Windows
+
+* **Obs_Path**: (String) The path to the .gdb file with the layers for flowline/shape data. Note that an r must be placed in front of the String path if using a Windows
     
 * **Obs_Layer**: (String) The layer with the observations in the .gdb file. 
 
@@ -124,7 +126,8 @@ Optional:
 from flow_class import flow_classification
 
 def main()
-    flow_classification.flow_classification(GDB_Path=r"Flow Regime CLassifications\Flow_Regimes.gdb", 
+    flow_classification.flow_classification(Obs_Path=r"Flow Regime CLassifications\Flow_Regimes.gdb",
+                                            Shp_Path=r"Flow Regime CLassifications\Flow_Regimes.gdb", 
                                             Obs_Layer="FlowRegime_Observations", 
                                             SHP_Layer="WBID_FlwRgme_Designations",  
                                             Unique_ID_Shp="WBID", 

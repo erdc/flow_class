@@ -31,7 +31,8 @@ class test_flowclass(unittest.TestCase):
 
 
         
-        x2=flow_classification.flow_classification(GDB_Path= r"tests/ADEQ_FlowRegimes_Test\Flow_Regimes.gdb", 
+        x2=flow_classification.flow_classification(Obs_Path= r"tests/ADEQ_FlowRegimes_Test\Flow_Regimes.gdb", 
+                                                   Shp_Path= r"tests/ADEQ_FlowRegimes_Test\Flow_Regimes.gdb", 
                                                    Obs_Layer='FlowRegime_Observations', SHP_Layer='WBID_FlwRgme_Designations', 
                                                    Unique_ID_Shp='WBID', 
                                                    Geometry_Column='geometry', 
@@ -64,7 +65,8 @@ class test_flowclass(unittest.TestCase):
         gdf2=gpd.GeoDataFrame(df2,geometry="geometry")
 
 
-        x3=flow_classification.flow_classification(GDB_Path= r"tests/ADEQ_FlowRegimes_Test2\Flow_Regimes.gdb", 
+        x3=flow_classification.flow_classification(Obs_Path= r"tests/ADEQ_FlowRegimes_Test\Flow_Regimes.gdb", 
+                                                   Shp_Path= r"tests/ADEQ_FlowRegimes_Test\Flow_Regimes.gdb", 
                                                    Obs_Layer='FlowRegime_Observations', 
                                                    SHP_Layer='WBID_FlwRgme_Designations',
                                                    Unique_ID_Shp='WBID', 

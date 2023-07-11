@@ -1,7 +1,8 @@
 from flow_class import flow_classification
 
 def main():
-    flow_classification.flow_classification(GDB_Path=r"C:\Users\megij\Documents\ERDC 23\ADEQ_FlowRegimes\Flow_Regimes.gdb",   #EDIT REQUIRED 
+    flow_classification.flow_classification(Obs_Path=r"C:\Users\megij\Documents\ERDC 23\ADEQ_FlowRegimes\Flow_Regimes.gdb",   #EDIT REQUIRED 
+                                            Shp_Path=r"C:\Users\megij\Documents\ERDC 23\ADEQ_FlowRegimes\Flow_Regimes.gdb",   #EDIT REQUIRED 
                                             Obs_Layer="FlowRegime_Observations",                        #EDIT REQUIRED 
                                             SHP_Layer="WBID_FlwRgme_Designations",                      #EDIT REQUIRED   
                                             Unique_ID_Shp="WBID",                                       #EDIT REQUIRED 
