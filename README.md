@@ -67,9 +67,13 @@ Required:
 
 * **Unique_ID_Obs**: (String) The name of the column in the layer which contains the unique identifer. Note: These values must match the unique identifiers in the Unique_ID_Shp column
 
-* **Priority_Column**: (String) The name of the column which holds the priority values data in the Obs_Layer
-
 * **Flow_Regime_Column**: (String) The name of the column which holds the flow regime (P, I, E, etc) values data in the Obs_Layer
+
+Highly Recommended:
+
+* **Priority_Column**: (String) The name of the column which holds the priority values data in the Obs_Layer. If it is left blank, all priorities will be set to 1.
+
+    Default: ""
 
 Optional:
 * **SHP_Fields**: (String Array) The list of the fields from the SHP_Layer which should be included in the output (geometry and unique_ID is already included and does not need to be listed again)

@@ -11,8 +11,8 @@ def flow_classification(*, Obs_Path,
                         Unique_ID_Shp, 
                         Geometry_Column, 
                         Unique_ID_Obs, 
-                        Priority_Column, 
                         Flow_Regime_Column, 
+                        Priority_Column="", 
                         SHP_Fields=[], 
                         Case=True, 
                         Perennial_Input_List=['P', 'Perennial', 'Potentially Perennial'], 
@@ -50,11 +50,12 @@ def flow_classification(*, Obs_Path,
     :param Unique_ID_Obs: The name of the column in the layer which contains the unique identifer. Note: These values must match the unique identifiers in the Unique_ID_Shp column
     :type Unique_ID_Obs: String
 
-    :param Priority_Column: The name of the column which holds the priority values data in the Obs_Layer
-    :type Priority_Column: String
-
     :param Flow_Regime_Column: The name of the column which holds the flow regime (P, I, E, etc) values data in the Obs_Layer
     :type Flow_Regime_Column: String
+
+    :param Priority_Column: The name of the column which holds the priority values data in the Obs_Layer. If this is empty, all priorities will be set to 0. This is not suggested
+    :type Priority_Column: String
+    :default Priority_Column: ""
 
     :param SHP_Fields: The list of the fields from the SHP_Layer which should be included in the output (geometry and unique_ID is already included and does not need to be listed again)
     :type SHP_Fields: String Array
@@ -115,7 +116,10 @@ def flow_classification(*, Obs_Path,
         raise Exception("Error 1.1: Weighted_Flag and Override_Flag connot both be set to False")
 
     # Read the observation file, Select the necessary fields, and Identify the Unique_ID
-    Obs_layer_IDS=[Unique_ID_Obs, Priority_Column, Flow_Regime_Column]
+    if(Priority_Column==""):
+        Obs_layer_IDS=[Unique_ID_Obs, Flow_Regime_Column]
+    else:
+        Obs_layer_IDS=[Unique_ID_Obs, Priority_Column, Flow_Regime_Column]
     try:
         FlowObs_gdf = gpd.read_file(Obs_Path, layer=Obs_Layer)
     except: 
@@ -138,12 +142,12 @@ def flow_classification(*, Obs_Path,
     #Cleaning- Remove any NA unique identifiers
     obs_none_count=FlowObs_gdf[Unique_ID_Obs].isna().sum() #determine how many missing WBID cells there are in observation file
     FlowObs_gdf = FlowObs_gdf.dropna(subset=[Unique_ID_Obs]) #remove rows with missing WBID
-    FlowObs_gdf[Unique_ID_Obs] = [x.strip() for x in FlowObs_gdf[Unique_ID_Obs]] #remove spaces
+    FlowObs_gdf[Unique_ID_Obs] = [str(x).strip() for x in FlowObs_gdf[Unique_ID_Obs]] #remove spaces
     print("Removed", obs_none_count, "rows with missing Unique ID from the observation file.")
 
     desg_none_count=FlowDesg_gdf[Unique_ID_Shp].isna().sum() #determine how many missing WBID cells there are in .shp file
     FlowDesg_gdf = FlowDesg_gdf.dropna(subset=[Unique_ID_Shp]) #remove rows with missing WBID
-    FlowDesg_gdf[Unique_ID_Shp] = [x.strip() for x in FlowDesg_gdf[Unique_ID_Shp]] #remove spaces
+    FlowDesg_gdf[Unique_ID_Shp] = [str(x).strip() for x in FlowDesg_gdf[Unique_ID_Shp]] #remove spaces
     print("Removed", desg_none_count, "rows with missing Unique ID from the shape file.")
 
     # remove fields in flowline gdf (shape layer) that have no observations in the observation file
@@ -196,19 +200,28 @@ def flow_classification(*, Obs_Path,
             if (Case==False and isinstance(obs, str)):
                 obs=obs.lower()
             j=row.index[0]
+            try:
+                if(Priority_Column==""):
+                    value=1
+                else:
+                    value=int(FlowObs_gdf.loc[i, Priority_Column])
+            except:
+                print("The priority column data for row", i, "is not acceptable") 
+                sys.exit("Error 2.1: Please edit data to be an integer")    
             if obs in Perennial_Input_List: #4-5
-                FlowDesg_values.loc[j,'P']+= FlowObs_gdf.loc[i, Priority_Column]
+                FlowDesg_values.loc[j,'P']+= value
             elif (obs in Intermittent_Input_List): #4-5
-                FlowDesg_values.loc[j,'I']+= FlowObs_gdf.loc[i, Priority_Column]
+                FlowDesg_values.loc[j,'I']+= value
             elif obs in Ephemeral_Input_List: #4-5
-                FlowDesg_values.loc[j,'E']+= FlowObs_gdf.loc[i, Priority_Column]
+                FlowDesg_values.loc[j,'E']+= value
             elif obs in At_Least_Intermittent_Input_List:
                 if(At_Least_Intermittent_Include==True):  #6-7
-                    FlowDesg_values.loc[j,'I']+= FlowObs_gdf.loc[i,Priority_Column]
+                    FlowDesg_values.loc[j,'I']+= value
                 if(At_Least_Intermittent_Override==True): #8-9
                     FlowDesg_values.loc[j,'ALI']= 1
             else:  #10
                 FlowDesg_values.loc[j,'Unknown']+= 1
+            
 
     print("Begin Documenting Flow Regimes..")   
     if(Weighted_Flag==True):
