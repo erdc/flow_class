@@ -20,7 +20,7 @@ HTTPS: ``` $ git clone https://github.com/erdc/flow_class.git ```
 SSH: ``` $ git clone git@github.com:erdc/flow_class.git ```
 
 ### Install:
-When the working directory is set to the clone of the package from above, the following commands can be used to save the code as a package.
+When the working directory is set to the clone of the package from above, the following commands can be used to save the code as a package. 
 
 * For General Use: ``` $ pip install . ```
 * For Editting: ``` $ pip install -e . ```
