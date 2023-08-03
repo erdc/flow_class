@@ -15,9 +15,9 @@ An 'At Least Intermittent' observation type is also supported. The user has two 
 
 ## Download, Install, Test, and Run
 ### Download:
-HTTPS: ``` $ git clone https://github.com/meg8mhs2/flow_class.git ```
+HTTPS: ``` $ git clone https://github.com/erdc/flow_class.git ```
 
-SSH: ``` $ git clone git@github.com:meg8mhs2/flow_class.git ```
+SSH: ``` $ git clone git@github.com:erdc/flow_class.git ```
 
 ### Install:
 When the working directory is set to the clone of the package from above, the following commands can be used to save the code as a package.
@@ -38,7 +38,7 @@ To use the function, edit the document 'flow_class_workflow.py' on the top lines
 ## Install as a Package
 To install the package for general use, run pip install 
 
-```$ git+https://github.com/meg8mhs2/flow_class.git ```
+```$ git+https://github.com/erdc/flow_class.git ```
 
 ## Dependencies
 The following packages are required for use:
