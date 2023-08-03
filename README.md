@@ -147,7 +147,7 @@ if __name__ =="__main__":
     main()
 ```
 
-# Disclaimer:
+## Disclaimer:
 Description: A software that uses a weight-of-evidence approach to assign a flow regime classification to streams.
 
 Disclaimer: The authors and creators of the Flow Regime Algorithm V1 are Water Quality Division staff at the Arizona Department of Environmental Quality (ADEQ) in Phoenix, AZ. The Flow Regime Algorithm V1 was used from 2020 to 2022 to assign flow regimes to surface waters in Arizona. In 2023, ADEQ utilized the principles of the Flow Regime Algorithm V1, along with the best available credible science, to develop an updated process for assigning flow regime to Arizona waters. Flow regime is not static and can change based on environmental conditions and new data or information. ADEQ cannot ensure the results of the Flow Regime Algorithm V1 are accurate, current or complete. For more information and the most recent information on flow regimes for Arizona waters, email WOTUS@azdeq.gov.
