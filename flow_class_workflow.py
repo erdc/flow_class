@@ -8,8 +8,8 @@ def main():
                                             Unique_ID_Shp="WBID",                                       #EDIT REQUIRED 
                                             Geometry_Column='geometry',                                 #EDIT REQUIRED 
                                             Unique_ID_Obs="WBID",                                       #EDIT REQUIRED 
-                                            Priority_Column="Priority",                                 #EDIT REQUIRED 
                                             Flow_Regime_Column="Flow_Regime",                           #EDIT REQUIRED 
+                                            Priority_Column="",                                 #EDIT STRONGLY RECOMMENDED
                                             #Edits Below are optional
                                             SHP_Fields=[], 
                                             Case=True, 
