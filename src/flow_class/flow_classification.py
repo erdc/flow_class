@@ -116,16 +116,16 @@ def flow_classification(*, Obs_Path,
         raise Exception("Error 1.1: Weighted_Flag and Override_Flag connot both be set to False")
 
     # Read the observation file, Select the necessary fields, and Identify the Unique_ID
-    if(Priority_Column==""):
+    if(Priority_Column==""): #columns we will pull from the obs file
         Obs_layer_IDS=[Unique_ID_Obs, Flow_Regime_Column]
     else:
         Obs_layer_IDS=[Unique_ID_Obs, Priority_Column, Flow_Regime_Column]
-    try:
+    try: #pull the observation file
         FlowObs_gdf = gpd.read_file(Obs_Path, layer=Obs_Layer)
     except: 
         print("The observation layer was not found in the GDB document") 
         sys.exit("Error 1.2: Please correct observation layer or GBD path")
-    try:
+    try: #pull the columns from the observation file
         FlowObs_gdf = FlowObs_gdf[Obs_layer_IDS]
     except:
         print("Unique_ID_Obs, Priority_Column and/or Flow_Regime_Column are not in observation layer") 
@@ -155,13 +155,16 @@ def flow_classification(*, Obs_Path,
     if(FlowDesg_filtered_gdf.empty==True):
         raise Exception("Error 1.5: There are no matches between the Unique ID for the Obs layer and the Unique ID for the shape layer")
 
-    # Create a new file (FlowDesg_value) which will document the output. Add the desired columns as specified in SHP_Fields
+    # Create a list of the columns for the output file and add the necessary columns as strings
     All_SHP_Fields=[Unique_ID_Shp, Geometry_Column]
 
+    #Add the desired columns as specified in SHP_Fields to the file
     for i in SHP_Fields:
         All_SHP_Fields.append(i)
-    try:
-        FlowDesg_values=FlowDesg_filtered_gdf.loc[:,All_SHP_Fields]
+    
+    # Create a new file (FlowDesg_value) which will document the output. 
+    try: 
+        FlowDesg_values=FlowDesg_filtered_gdf.loc[:,All_SHP_Fields] #FlowDesg_filtered_gdf is a copy of the shapefile with only the IDs which have observations
     except:
         print("Unique_ID_Shp, Geometry_Column and/or a column name in SHP_Fields are not in shape layer") 
         sys.exit("Error 1.6: Please correct observation layer column names")

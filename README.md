@@ -118,7 +118,7 @@ Optional:
 
 * **Output**: (String) The name/location of the output file.
 
-    Default: None (if specified to None, the output will be a .shp file labelled Flow_Classification_Output_{Date}.shp)
+    Default: None (if specified to None, the output will be a .shp file labelled Flow_Classification_Output_{Date}.shp). This will overwrite any previous runs performed on the same day!
 
 * **Output_Columns_Weighted**: (boolean) Whether the output file should have the columns with the sum of weights for each classification (P,I,E) (True) or not (False)
 
